@@ -8,7 +8,6 @@ const OtpPage = () => {
 
     const searchParams = useSearchParams();
     const email = searchParams.get("email")
-    console.log(email)
     const router = useRouter()
     const [loading,setLoading] = useState(false)
     const [otp, setOtp] = useState(new Array(6).fill(""));

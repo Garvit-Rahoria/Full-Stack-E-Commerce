@@ -2,7 +2,8 @@
 import { toast } from 'react-toastify';
 import axios from 'axios';
 const client = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    withCredentials: true
 
 });
 

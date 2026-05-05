@@ -15,7 +15,7 @@ const Filters = async () => {
         getBrands({ status: true })
     ])
 
-    const categories = category_reponse.data || []
+    const categories = category_reponse?.data || []
     const colors = color_reponse.data || []
     const brands = brand_reponse.data || []
 

@@ -3,7 +3,8 @@ const cryptr = require('cryptr');
 const Cryptr = new cryptr(process.env.SECRET_KEY);
 const sendOtpMail = require("../utils/sendOtpMail")
 const userModel = require("../models/userModel");
-const { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendConflict, sendSuccess, sendOk } = require("../utils/response")
+const { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendConflict, sendSuccess, sendOk } = require("../utils/response");
+const generateToken = require('../utils/generateOtp');
 
 const register = async (req, res) => {
     try {
@@ -37,21 +38,21 @@ const register = async (req, res) => {
 }
 
 
-const verifyEmail = async (req,res) =>{
+const verifyEmail = async (req, res) => {
     try {
-        const {email,otp} = req.body;
-        const user = await userModel.findOne({email});
-        if(!user){
+        const { email, otp } = req.body;
+        const user = await userModel.findOne({ email });
+        if (!user) {
             return sendConflict(res, "User not found")
         }
-        if(user.isVerified){
+        if (user.isVerified) {
             return sendBadRequest(res, "Email is already verified");
         }
-        if(user.otp !== parseInt(otp)) {
+        if (user.otp !== parseInt(otp)) {
             return sendBadRequest(res, "Invalid OTP")
         }
-        if(user.otpExpire < Date.now()){
-            return sendBadRequest(res,"OTP has expired")
+        if (user.otpExpire < Date.now()) {
+            return sendBadRequest(res, "OTP has expired")
         }
 
         user.isVerified = true;
@@ -65,11 +66,11 @@ const verifyEmail = async (req,res) =>{
     }
 }
 
-const resetOtp = async (req,res) => {
+const resetOtp = async (req, res) => {
     try {
-        const {email} = req.body;
-        const user = await userModel.findOne({email});
-        if(!user){
+        const { email } = req.body;
+        const user = await userModel.findOne({ email });
+        if (!user) {
             return sendConflict(res, "User not found");
         }
         const otp = Math.floor(100000 + Math.random() * 900000);
@@ -77,18 +78,18 @@ const resetOtp = async (req,res) => {
         user.otpExpire = Date.now() + 3 * 60 * 1000;
         await user.save()
 
-        const mailResponse = await sendOtpMail(email,otp);
+        const mailResponse = await sendOtpMail(email, otp);
         console.log(mailResponse)
-        return sendSuccess(res,"OTP reset successfully!")
+        return sendSuccess(res, "OTP reset successfully!")
     } catch (error) {
-        return sendServerError(res,error)
+        return sendServerError(res, error)
     }
 }
 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        if ( !email || !password) {
+        if (!email || !password) {
             return sendBadRequest(res, "email and password are required");
         }
         const user = await userModel.findOne({ email });
@@ -97,11 +98,19 @@ const login = async (req, res) => {
         }
 
         const decryptedPass = Cryptr.decrypt(user.password);
-        if(decryptedPass !== password){
+        if (decryptedPass !== password) {
             return sendBadRequest(res, "Wrong Password")
         }
+        const token = generateToken(user._id)
 
-    
+        res.cookie('jwt', token, {
+            maxAge: 30 * 24 * 60 * 60 * 1000,  // 30d
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+
+
         return sendSuccess(res, "User Login Successfully!", { id: user._id, name: user.name, email: user.email });
 
     } catch (error) {
@@ -110,8 +119,39 @@ const login = async (req, res) => {
         console.log(error, message)
     }
 }
+const getMe = async (req, res) => {
+    try {
+        res.status(200).json({
+            message: "User Find",
+            success: true,
+            user: req.user
+        })
+
+    } catch (error) {
+        return sendServerError(res, error)
+    }
+}
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('jwt');
+        res.sendSuccess(res)
+
+    } catch (error) {
+        return sendServerError(res, error)
+    }
+}
+
+
+const address = () => {
+    try {
+        console.log(req.body)
+
+    } catch (error) {
+        return sendServerError(res, error)
+    }
+}
 
 
 module.exports = {
-    register,verifyEmail,resetOtp,login
+    register, verifyEmail, resetOtp, login, getMe, logout,address
 }

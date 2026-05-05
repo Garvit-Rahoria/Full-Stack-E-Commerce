@@ -12,6 +12,7 @@ export default async function CategoryPage() {
 
   try {
     const res = await getCategories()
+    console.log(res)
     categories = res.data
     meta = res.meta || {}
   } catch (error) {

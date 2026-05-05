@@ -1,11 +1,16 @@
 require('dotenv').config()
 const express = require("express")
 const cors = require("cors")
+let cookieParser = require('cookie-parser')
 const mongoose = require("mongoose")
 const app = express();
+app.use(cookieParser())
 app.use(express.static("public"))
 app.use(express.json())
-app.use(cors("*"))
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials:true
+}))
 
 app.use("/api/category",require("./routers/categoryRouter"))
 app.use("/api/brand",require("./routers/brandRouter"))

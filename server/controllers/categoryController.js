@@ -50,6 +50,7 @@ const read = async (req, res) => {
             })
         }
     } catch (error) {
+        console.log(error)
         sendServerError(res)
     }
 }

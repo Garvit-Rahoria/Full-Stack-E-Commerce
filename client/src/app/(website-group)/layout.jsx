@@ -3,6 +3,7 @@ import '../globals.css'
 import Header from "@/components/website/global/Header";
 import Footer from "@/components/website/global/Footer";
 import ReduxProvider from "@/redux/ReduxProvider";
+import { getMe } from "@/api/api-call";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,13 +19,14 @@ export const metadata = {
   title: "E-Commerce",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const { user } = await getMe();
   return (
     <html lang="en"
-    className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f3f4f6]`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f3f4f6]`}
     >
       <body
-        
+
       >
         <ReduxProvider>
           <Header />

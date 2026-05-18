@@ -3,6 +3,7 @@ import '../globals.css'
 import Header from "@/components/website/global/Header";
 import Footer from "@/components/website/global/Footer";
 import ReduxProvider from "@/redux/ReduxProvider";
+import NextTopLoader from 'nextjs-toploader';
 import { getMe } from "@/api/api-call";
 
 const geistSans = Geist({
@@ -29,7 +30,10 @@ export default async function RootLayout({ children }) {
 
       >
         <ReduxProvider>
-          <Header />
+          <Header user={user} />
+          <NextTopLoader color="#009688"
+          height={4}
+          showSpinner={false}/>
           {children}
           <Footer />
         </ReduxProvider>

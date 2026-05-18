@@ -133,25 +133,86 @@ const getMe = async (req, res) => {
 }
 const logout = async (req, res) => {
     try {
-        res.clearCookie('jwt');
-        res.sendSuccess(res)
+
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        });
+
+        return sendSuccess(res, "User Logout Successfully!");
 
     } catch (error) {
-        return sendServerError(res, error)
+        return sendServerError(res, error.message);
     }
-}
+};
 
 
-const address = () => {
+
+
+
+const addAddress = async (req, res) => {
     try {
-        console.log(req.body)
 
+        
+        const userId = req.user._id
+
+
+        const { fullName, mobile, pincode, addressLine, city, state, country } = req.body
+        const user = await userModel.findById({ _id: userId })
+        console.log(fullName, mobile, pincode, addressLine, city, state, country)
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            })
+        }
+        user.addresses.push({
+            fullName, mobile, pincode, addressLine, city, state, country
+        })
+
+
+        await user.save()
+        res.status(200).json({
+            message: "Address Addedd Successfully",
+            success: true,
+            addresses: user.addresses
+        })
+        console.log(req.user)
     } catch (error) {
-        return sendServerError(res, error)
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
     }
 }
+
+
+// const updateProfile = async (req, res) => {
+//     try {
+//         const userId = req.user._id;
+//         const { fullName, email, mobile } = req.body;
+
+//         const user = await userModel.findByIdAndUpdate(
+//             userId,
+//             { fullName, email, mobile },
+//             { new: true }
+//         ).select('-password');
+
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: 'User not found' });
+//         }
+
+//         res.json({ success: true, message: 'Profile updated!', user });
+
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 
 
 module.exports = {
-    register, verifyEmail, resetOtp, login, getMe, logout,address
+    register, verifyEmail, resetOtp, login, getMe, logout, addAddress
 }

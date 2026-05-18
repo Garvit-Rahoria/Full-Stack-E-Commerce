@@ -7,6 +7,7 @@ export default function HeroBanner() {
             {/* Background Image */}
             <Image
                 src="https://www.shutterstock.com/image-photo/create-banner-gadget-store-flat-260nw-2553356023.jpg"
+                // src="/Hero-Banner.png"
                 alt="Electronics Banner"
                 fill
                 className="object-cover"

@@ -109,6 +109,10 @@ const getMe = async () => {
 
     const cookieStore = await cookies();
     const token = cookieStore.get("jwt")?.value ?? null;
+
+    if (!token) {
+        return { user: null }
+    }
     const response = await client.get("/user/get", {
         headers: {
             Authorization: token

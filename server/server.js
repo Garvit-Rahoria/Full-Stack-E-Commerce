@@ -17,7 +17,8 @@ app.use("/api/brand",require("./routers/brandRouter"))
 app.use("/api/color",require("./routers/colorRouter"))
 app.use("/api/product",require("./routers/productRouter"))
 app.use("/api/user",require("./routers/userRouter"))
-
+app.use("/api/cart", require("./routers/cartRouter"))
+app.use("/api/order", require("./routers/orderRouter"))
 
 mongoose.connect(process.env.MONGODB_URL).then(
     ()=>{

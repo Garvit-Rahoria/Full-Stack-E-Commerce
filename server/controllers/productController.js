@@ -47,6 +47,7 @@ const read = async (req, res) => {
     // category filter
     if (query.category_slug) {
         const category = await categoryModel.findOne({ slug: query.category_slug })
+        if (!category) return sendNotFound(res, "Category not found")
         filter.categoryId = category._id
     }
 

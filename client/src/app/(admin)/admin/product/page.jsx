@@ -50,6 +50,7 @@ export default async function ProductPage() {
                 <th className="text-left p-4">Brand</th>
                 <th className="text-left p-4">Color</th>
                 <th className="text-left p-4">Status</th>
+                <th className="text-left p-4">Top</th>
                 <th className="text-center p-4">Actions</th>
               </tr>
             </thead>
@@ -102,6 +103,10 @@ export default async function ProductPage() {
                       {/* Status */}
                       <td className="p-4">
                         <StatusBtn value={prod.status} url={`/product/status-update/${prod._id}`} field="status" />
+                      </td>
+                       {/* Top */}
+                      <td className="p-4">
+                        <StatusBtn value={prod.is_top} url={`/product/status-update/${prod._id}`} field="is_top" />
                       </td>
 
 

@@ -1,3 +1,4 @@
+import { getProducts } from '@/api/api-call'
 import Image from 'next/image'
 
 const topCategories = [
@@ -7,7 +8,14 @@ const topCategories = [
     { name: 'Monitors', image: '/categories/monitors.png' },
 ]
 
-export default function TopCategories() {
+export default async function TopCategories() {
+
+    const productData = await getProducts({ status: true, is_top: true, limit: 4 })
+    const imageUrl = productData?.meta?.imageBaseUrl;
+
+    const product = productData.data || []
+
+
     return (
         <div className="bg-white rounded-xl shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
@@ -18,16 +26,15 @@ export default function TopCategories() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {topCategories.map((cat, index) => (
+                {product.map((cat, index) => (
                     <div
                         key={index}
                         className="flex flex-col items-center justify-center rounded-lg p-4 hover:shadow transition cursor-pointer"
                     >
                         <div className="relative w-16 h-16 mb-3">
-                            <Image
-                                src={cat.image}
+                            <img
+                                src={`${imageUrl}/${cat.image}`}
                                 alt={cat.name}
-                                fill
                                 className="object-cover"
                             />
                         </div>

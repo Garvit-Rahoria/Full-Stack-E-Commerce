@@ -10,6 +10,13 @@ const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || null;
+    const Items = cartItems?.items || []
+    // const [cartItems] = useState(() => {
+    //     if (typeof window === "undefined") return [];  // server pe empty return karo
+    //     const data = JSON.parse(localStorage.getItem("cart"));
+    //     return data?.items || [];
+    // });
 
     const [form, setForm] = useState({
         email: "",
@@ -25,21 +32,54 @@ const LoginForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         setLoading(true);
 
         client.post("/user/login", form)
-            .then((response) => {
+            .then(async (response) => {
                 notify(response.data.message, response.data.success);
 
                 if (response.data.success) {
-                    setForm({
-                        email: "",
-                        password: "",
-                    });
-
+                    console.log(response)
                     router.push("/");
+                    // setForm({
+                    //     email: "",
+                    //     password: "",
+                    // });
+
+                    try {
+                        const cartRes = await client.post("/cart/sync", {
+                            localCart: JSON.stringify(Items)
+                        });
+
+                        console.log(cartRes.data, "cartRes")
+
+                        const cartData = cartRes.data?.cart;
+                        console.log(cartData)
+                        let final_total = 0;
+                        let original_total = 0;
+                        const items = cartData?.map((item) => {
+                            const { name, _id, orginal_price, final_price, discount_percentage, price, thumbnail, stock } = item.productId
+                            final_total += (final_price * item.qty)
+                            original_total += (orginal_price * item.qty)
+                            return {
+                                name, _id, orginal_price, final_price, discount_percentage, price, thumbnail: cartRes.data.imageBaseUrl + thumbnail, stock, qty: item.qty
+                            }
+                        })
+
+                        localStorage.setItem("cart", JSON.stringify({
+                            final_total,
+                            original_total,
+                            items
+                        }))
+
+                        
+
+                    } catch (error) {
+                        console.log(error)
+                    }
+
                 }
+                // router.push("/");
             })
             .catch((error) => {
                 const message =

@@ -1,12 +1,14 @@
+import { getMe } from '@/api/api-call'
 import Breadcrumb from '@/components/website/global/Breadcrumb'
 import ProfilePage from '@/components/website/Profile/ProfilePage'
 import React from 'react'
 
-export default function page() {
+export default async function page() {
+    const { user } = await getMe()
     return (
         <>
             <Breadcrumb />
-            <ProfilePage />
+            <ProfilePage user={user} />
         </>
     )
 }

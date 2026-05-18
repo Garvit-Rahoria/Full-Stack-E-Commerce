@@ -43,47 +43,93 @@ export default function CategoryFilter({ categories }) {
         //     </div>
         // </div>
 
+        // <div>
+        //     <h4 className="font-medium text-black mb-3">BY CATEGORY~</h4>
+
+        //     {/* ALL CATEGORIES */}
+        //     <Link href="/products">
+        //         <button
+        //             className={`w-full border rounded-md py-2 mb-2 font-medium cursor-pointer transition
+        //                 ${isAllActive
+        //                     ? "bg-teal-500 text-white"
+        //                     : "bg-white hover:bg-gray-100"
+        //                 }`}
+        //         >
+        //             All Categories
+        //         </button>
+        //     </Link>
+
+        //     <div className="flex flex-col space-y-1 text-gray-600">
+
+        //         {categories.map((cat) => {
+        //             const isActive = pathname === `/products/${cat.slug}`;
+
+        //             return (
+        //                 <Link key={cat._id} href={`/products/${cat.slug}`}>
+        //                     <div
+        //                         className={`
+        //                                flex justify-between items-center
+        //                                ml-3 px-2 py-1 rounded-md cursor-pointer
+        //                                transition-all duration-200
+        //                                ${isActive
+        //                                 ? "bg-teal-500 text-white shadow-sm"
+        //                                 : "hover:bg-teal-100  hover:text-black"}
+        //                                 `}
+        //                     >
+        //                         <span className="text-sm">{cat.name}</span>
+        //                         <span className="text-xs">{cat.count || 0}</span>
+        //                     </div>
+        //                 </Link>
+        //             );
+        //         })}
+
+        //     </div>
+        // </div>
+
         <div>
-            <h4 className="font-medium text-black mb-3">BY CATEGORY~</h4>
+    <h4 className="font-medium text-black mb-3">BY CATEGORY~</h4>
 
-            {/* ALL CATEGORIES */}
-            <Link href="/products">
-                <button
-                    className={`w-full border rounded-md py-2 mb-2 font-medium cursor-pointer transition
-                        ${isAllActive
-                            ? "bg-teal-500 text-white"
-                            : "bg-white hover:bg-gray-100"
-                        }`}
-                >
-                    All Categories
-                </button>
-            </Link>
+    {/* ALL CATEGORIES */}
+    <Link href="/products">
+        <button
+            className={`w-full border rounded-md px-4 py-2 mb-4 font-medium cursor-pointer transition
+            ${isAllActive
+                    ? "bg-teal-500 text-white"
+                    : "bg-white hover:bg-gray-100"}
+            `}
+        >
+            All Categories
+        </button>
+    </Link>
 
-            <div className="flex flex-col space-y-1 text-gray-600">
+    <div className="flex flex-wrap gap-3 text-gray-600">
 
-                {categories.map((cat) => {
-                    const isActive = pathname === `/products/${cat.slug}`;
+        {categories.map((cat) => {
+            const isActive = pathname === `/products/${cat.slug}`;
 
-                    return (
-                        <Link key={cat._id} href={`/products/${cat.slug}`}>
-                            <div
-                                className={`
-                                       flex justify-between items-center
-                                       ml-3 px-2 py-1 rounded-md cursor-pointer
-                                       transition-all duration-200
-                                       ${isActive
-                                        ? "bg-teal-500 text-white shadow-sm"
-                                        : "hover:bg-teal-100  hover:text-black"}
-                                        `}
-                            >
-                                <span className="text-sm">{cat.name}</span>
-                                <span className="text-xs">{cat.count || 0}</span>
-                            </div>
-                        </Link>
-                    );
-                })}
+            return (
+                <Link key={cat._id} href={`/products/${cat.slug}`}>
+                    <div
+                        className={`
+                            flex items-center gap-2
+                            px-2 py-1 rounded-2xl cursor-pointer border
+                            transition-all duration-200
+                            ${isActive
+                                ? "bg-teal-500 text-white shadow-sm"
+                                : "hover:bg-teal-100 hover:text-black"}
+                        `}
+                    >
+                        <span className="text-xs">{cat.name}</span>
 
-            </div>
-        </div>
+                        {cat.count ? (
+                            <span className="text-xs">({cat.count})</span>
+                        ) : null}
+                    </div>
+                </Link>
+            );
+        })}
+
+    </div>
+</div>
     )
 }
